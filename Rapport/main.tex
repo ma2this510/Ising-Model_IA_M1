@@ -59,25 +59,29 @@
 
 \section{Pré-traitement des données}
 Maintenant que nous avons généré nos données, nous devons nous faire une idée de la forme de nos données afin de pouvoir les traiter de la meilleure façon possible.
-Les données fournis au départ sont des matrices de taille $40 \times 40$ contenant des $1$ et des $-1$. Ces matrices représentent des configurations de spins. Le dataset original est composé de $10000$ configurations de spins pour $16$ températures différentes comprises entre $0.25$ et $4.00$ avec un pas de $0.25$. 
-De plus, nous avons généré \todo{Anatole : Completer cette ligne ou supprimer si superflu}...
-Comme on peut le voir sur la figure \ref{fig:rawdata}, nos données forment un ensemble bruité mais il apparait une symetrie par rapport à l'axe horizontal. En effet, à basse températures, les spins sont majoritairement alignés de la même façon mais de manière aléatoie en $+$ ou $-$.
-Cette symétrie de nos données peut poser un problème à nos modèles qui auront du à apprendre à faire la différence entre deux configurations opposées mais équivalentes. Pour éviter ce problème, nous allons symétriser nos données en inversant les spins de toutes les configurations qui ont une moyenne de spin \todo{Verifier la manière de symétriser} négative. 
+Les données fournies au départ sont des matrices de taille $40 \times 40$ contenant des $1$ et des $0$. Ces matrices représentent des configurations de spins. Le dataset original est composé de $10000$ configurations de spins pour $16$ températures différentes comprises entre $0.25$ et $4.00$ avec un pas de $0.25$. 
+De plus, nous avons généré \todo{Anatole : Compléter cette ligne ou supprimer si superflu}...
+Comme on peut le voir sur la figure \ref{fig:rawdata}, nos données forment un ensemble bruité mais il apparaît une symétrie par rapport à l'axe horizontal. En effet, à basse température, les spins sont majoritairement alignés de la même façon mais de manière aléatoire en $+$ ou $-$.
+Cette symétrie de nos données peut poser un problème à nos modèles qui auront dû apprendre à faire la différence entre deux configurations opposées mais équivalentes. Pour éviter ce problème, nous allons symétriser nos données en inversant les spins de toutes les configurations qui ont une moyenne de spin \todo{Vérifier la manière de symétriser} négative. 
 Ainsi, on se retrouve avec des données symétriques par rapport à l'axe horizontal comme on peut le voir sur la figure \ref{fig:symdata}.
 
 \begin{figure}[h]
 	\begin{subfigure}{0.5\textwidth}
-		\includegraphics[width=0.9\linewidth]{./figures/raw_data.png}
+		\includegraphics[width=0.95\linewidth]{./figures/raw_data.png}
 		\caption{Données brutes}
 		\label{fig:rawdata}
 	\end{subfigure}
 	\begin{subfigure}{0.5\textwidth}
-		\includegraphics[width=0.9\linewidth]{./figures/sym_data.png}
+		\includegraphics[width=0.95\linewidth]{./figures/sym_data.png}
 		\caption{Données symétrisées}
 		\label{fig:symdata}
 	\end{subfigure}
+	\caption{}
 \end{figure}
 
+Dans la partie suivante, nous allons entraîner certains modèles spécifiques sur la densité de spin symétrisée. Dans ce cas, nous allons aussi normaliser afin de rendre les modèles plus performants.
+Pour cela, nous allons utiliser la méthode \textit{StandardScaler} de la librairie \textit{sklearn} qui permet de centrer et réduire les données. Cette méthode soustrait la moyenne et divise par l'écart-type. Ainsi, on se retrouve avec des données centrées en $0$ et de variance $1$.
+Afin d'appliquer exactement la même transformation sur les données de test, nous allons créer un pipeline qui va appliquer la méthode de symétrisation puis la méthode de normalisation. Ainsi, on pourra appliquer le pipeline sur les données de test sans avoir à les modifier.
 \section{Modèles classiques}
 
 \section{Réseaux de neurones}
