@@ -52,6 +52,8 @@
 \maketitle % Print the title
 \tableofcontents % Print the contents
 
+\newpage
+
 \addcontentsline{toc}{section}{Introduction}
 \section*{Introduction}
 
@@ -59,7 +61,8 @@
 
 \section{Pré-traitement des données}
 Maintenant que nous avons généré nos données, nous devons nous faire une idée de la forme de nos données afin de pouvoir les traiter de la meilleure façon possible.
-Les données fournies au départ sont des matrices de taille $40 \times 40$ contenant des $1$ et des $0$. Ces matrices représentent des configurations de spins. Le dataset original est composé de $10000$ configurations de spins pour $16$ températures différentes comprises entre $0.25$ et $4.00$ avec un pas de $0.25$. 
+Les données fournies au départ sont des matrices de taille $40 \times 40$ contenant des $1$ et des $0$. Ces matrices représentent des configurations de spins. Le dataset original est composé de $10000$ configurations de spins pour $16$ températures différentes comprises entre $0.25$ et $4.00$ avec un pas de $0.25$.
+Avec ces configurations, un label est associé à chaque configuration. Ce label est une valeur binaire qui nous indique la phase dans laquelle se trouve le système. 
 De plus, nous avons généré \todo{Anatole : Compléter cette ligne ou supprimer si superflu}...
 Comme on peut le voir sur la figure \ref{fig:rawdata}, nos données forment un ensemble bruité mais il apparaît une symétrie par rapport à l'axe horizontal. En effet, à basse température, les spins sont majoritairement alignés de la même façon mais de manière aléatoire en $+$ ou $-$.
 Cette symétrie de nos données peut poser un problème à nos modèles qui auront dû apprendre à faire la différence entre deux configurations opposées mais équivalentes. Pour éviter ce problème, nous allons symétriser nos données en inversant les spins de toutes les configurations qui ont une moyenne de spin \todo{Vérifier la manière de symétriser} négative. 
