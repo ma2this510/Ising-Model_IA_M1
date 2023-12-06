@@ -5,3 +5,9 @@ ising
 /.vscode
 /build
 /cmake-build-debug
+Rapport/main.aux
+Rapport/main.fdb_latexmk
+Rapport/main.fls
+Rapport/main.log
+Rapport/main.synctex.gz
+Rapport/main.toc

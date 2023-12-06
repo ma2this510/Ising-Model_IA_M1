@@ -43,7 +43,7 @@
 	\vspace{12pt} % Whitespace
 }
 
-\author{\LARGE A. Cremel-Schlemer (\large{xxxxxxxx}) \\ \LARGE G. Carvalho (\large{xxxxxxxx}) \\ \LARGE M. Panet (\large{28705836})} % Your name
+\author{\LARGE A. Cremel-Schlemer \large (xxxxxxxx) \\ \LARGE G. Carvalho \large (xxxxxxxx) \\ \LARGE M. Panet \large (28705836)} % Your name
 
 \date{\normalsize\today} % Today's date (\today) or a custom date
 
@@ -56,6 +56,27 @@
 \section*{Introduction}
 
 \section{Génération de données}
+
+\section{Pré-traitement des données}
+Maintenant que nous avons généré nos données, nous devons nous faire une idée de la forme de nos données afin de pouvoir les traiter de la meilleure façon possible.
+Les données fournis au départ sont des matrices de taille $40 \times 40$ contenant des $1$ et des $-1$. Ces matrices représentent des configurations de spins. Le dataset original est composé de $10000$ configurations de spins pour $16$ températures différentes comprises entre $0.25$ et $4.00$ avec un pas de $0.25$. 
+De plus, nous avons généré \todo{Anatole : Completer cette ligne ou supprimer si superflu}...
+Comme on peut le voir sur la figure \ref{fig:rawdata}, nos données forment un ensemble bruité mais il apparait une symetrie par rapport à l'axe horizontal. En effet, à basse températures, les spins sont majoritairement alignés de la même façon mais de manière aléatoie en $+$ ou $-$.
+Cette symétrie de nos données peut poser un problème à nos modèles qui auront du à apprendre à faire la différence entre deux configurations opposées mais équivalentes. Pour éviter ce problème, nous allons symétriser nos données en inversant les spins de toutes les configurations qui ont une moyenne de spin \todo{Verifier la manière de symétriser} négative. 
+Ainsi, on se retrouve avec des données symétriques par rapport à l'axe horizontal comme on peut le voir sur la figure \ref{fig:symdata}.
+
+\begin{figure}[h]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{./figures/raw_data.png}
+		\caption{Données brutes}
+		\label{fig:rawdata}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{./figures/sym_data.png}
+		\caption{Données symétrisées}
+		\label{fig:symdata}
+	\end{subfigure}
+\end{figure}
 
 \section{Modèles classiques}
 
