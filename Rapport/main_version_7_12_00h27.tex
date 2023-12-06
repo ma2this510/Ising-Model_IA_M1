@@ -1,0 +1,127 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Wenneker Assignment
+% LaTeX Template
+% Version 2.0 (12/1/2019)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Vel (vel@LaTeXTemplates.com)
+% Frits Wenneker
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt]{scrartcl} % Font size
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\title{	
+	\normalfont\normalsize
+	\large\textsc{Sorbonne Université, UFR de Physique}\\ % Your university, school and/or department name(s)
+	\vspace{2pt} % Whitespace
+	\normalsize Master 1 : Physique fondamentale et applications\\
+	\vspace{25pt} % Whitespace
+	\rule{\linewidth}{0.5pt}\\ % Thin top horizontal rule
+	\vspace{20pt} % Whitespace
+	{\huge Projet IA : Le Modèle d'Ising}\\ % The assignment title
+	\vspace{2pt} % Whitespace
+	{Intelligence artificielle pour la physique}\\
+	\vspace{12pt} % Whitespace
+	\rule{\linewidth}{2pt}\\ % Thick bottom horizontal rule
+	\vspace{12pt} % Whitespace
+}
+
+\author{\LARGE A. Cremel-Schlemer \large (3800159) \\ \LARGE G. Carvalho \large (xxxxxxxx) \\ \LARGE M. Panet \large (28705836)} % Your name
+
+\date{\normalsize\today} % Today's date (\today) or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+\tableofcontents % Print the contents
+
+\newpage
+
+\addcontentsline{toc}{section}{Introduction}
+\section*{Introduction}
+
+Le modèle d'Ising est un modèle de physique statistique introduit par Rudolph Peierls, Wilhelm Lenz et Ernst Ising dans les années 1920. Ce modèle d'une remarquable simplicité lui permet pourtant de mettre en exergue un comportement de transition de phase.
+
+\vspace{2mm}
+
+Sous sa formulation historique, le modèle d'Ising permet d'étudier la transition de phase paramagnétique/ferromagnétique d'un matériau. 
+
+Certains matériaux possèdent une aimantation intrinsèque ; ils sont dits ferromagnétiques. C'est le cas des aimants. Cette propriété provient d'interactions à courte portée entre les spins d'un cristal. Mais, comme l'a découvert en 1895 le physicien Pierre Curie, ces matériaux perdent leur propriété magnétique au-dessus d'une température caractéristique appelée température de Curie $T_C$.
+
+On trouve aussi des matériaux dits paramagnétiques. Ces matériaux ne sont pas magnétiques, mais le deviennent au contact d'un champ magnétique extérieur puissant.
+
+En l'absence de champ magnétique extérieur, les spins de ces matériaux sont désordonnés, de sorte qu'en moyenne, le moment magnétique du matériau est nul : le materiaux n'est pas magnétique. Sous l'action d'un champ magnétique extérieur, ces moments se polarisent, ce qui rend le matériau magnétique.
+
+\vspace{2mm}
+
+L'hamiltonien du modèle d'Ising prend donc en compte ces deux propriétés, puisqu'une partie de cet est relative à l'interaction ferromagnétique à courte portée et l'autre partie est relative à l'interaction de chaque spin du cristal avec un champ magnétique extérieur. 
+
+Dans la plupart des modèles numériques, on travaille sans champ extérieur.
+
+\vspace{2mm} 
+La relative généralité de ce modèle (interactions locales et interaction individuelle avec une force extérieure) transcende la physique et permet de décrire qualitativement et parfois quantitativement une très grande variété de situations (paramagnétisme, gaz réticulaire, agents économiques, modèles écologiques, utilisation en analyse et traitement de l'image). Il donnera même lieu à un modèle plus général : le modèle de Potts (qui généralise l'aspect binaire du modèle d'Ising lié à la binarité des spins).
+
+\vspace{2mm}
+
+Le modèle d'Ising 2D est une approche numérique de la résolution de ce problème, où chaque atome d'un cristal idéal plat et de maille carrée est associé à un pixel d'une image, et chaque spin est représenté soit par un 0, soit par un 1. Pour améliorer la validité du modèle, des conditions aux bords périodiques sont utilisées.
+
+\vspace{2mm}
+À travers notre exposé sur l'intelligence artificielle, nous allons nous intéresser à un jeu de données constitué de 16 000 images de 40 x 40 pixels. Chaque image est associée à une température caractéristique allant de 0.25 à 4 (sans unité) et à un label \textit{phase ferromagnétique} , où les spins sont globalement tous alignés ou forment des îlots de spins alignés (|M| > 0), et un label \textit{phase paramagnétique}, où les spins sont globalement désordonnés (M = 0).
+\vspace{2mm}
+Nous allons explorer différentes méthodes pour voir quelles solutions d'intelligence artificielle nous permettent de trancher, à partir d'une image donnée, si l'on est dans la phase paramagnétique ou ferromagnétique. Nous nous intéresserons aussi à la manière dont sont générées les données du modèle d'Ising. Nous chercherons à voir s'il est possible de prédire la température d'une image de manière fiable et même s'il est possible de générer de nouvelles données sans faire appel à une simulation numérique coûteuse.
+\vspace{2mm}
+\section{Génération de données}
+
+\section{Pré-traitement des données}
+Maintenant que nous avons généré nos données, nous devons nous faire une idée de la forme de nos données afin de pouvoir les traiter de la meilleure façon possible.
+Les données fournies au départ sont des matrices de taille $40 \times 40$ contenant des $1$ et des $0$. Ces matrices représentent des configurations de spins. Le dataset original est composé de $10000$ configurations de spins pour $16$ températures différentes comprises entre $0.25$ et $4.00$ avec un pas de $0.25$.
+Avec ces configurations, un label est associé à chaque configuration. Ce label est une valeur binaire qui nous indique la phase dans laquelle se trouve le système. 
+De plus, nous avons généré \todo{Anatole : Compléter cette ligne ou supprimer si superflu}...
+Comme on peut le voir sur la figure \ref{fig:rawdata}, nos données forment un ensemble bruité mais il apparaît une symétrie par rapport à l'axe horizontal. En effet, à basse température, les spins sont majoritairement alignés de la même façon mais de manière aléatoire en $+$ ou $-$.
+Cette symétrie de nos données peut poser un problème à nos modèles qui auront dû apprendre à faire la différence entre deux configurations opposées mais équivalentes. Pour éviter ce problème, nous allons symétriser nos données en inversant les spins de toutes les configurations qui ont une moyenne de spin \todo{Vérifier la manière de symétriser} négative. 
+Ainsi, on se retrouve avec des données symétriques par rapport à l'axe horizontal comme on peut le voir sur la figure \ref{fig:symdata}.
+
+\begin{figure}[h]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.95\linewidth]{./figures/raw_data.png}
+		\caption{Données brutes}
+		\label{fig:rawdata}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.95\linewidth]{./figures/sym_data.png}
+		\caption{Données symétrisées}
+		\label{fig:symdata}
+	\end{subfigure}
+	\caption{}
+\end{figure}
+
+Dans la partie suivante, nous allons entraîner certains modèles spécifiques sur la densité de spin symétrisée. Dans ce cas, nous allons aussi normaliser afin de rendre les modèles plus performants.
+Pour cela, nous allons utiliser la méthode \textit{StandardScaler} de la librairie \textit{sklearn} qui permet de centrer et réduire les données. Cette méthode soustrait la moyenne et divise par l'écart-type. Ainsi, on se retrouve avec des données centrées en $0$ et de variance $1$.
+Afin d'appliquer exactement la même transformation sur les données de test, nous allons créer un pipeline qui va appliquer la méthode de symétrisation puis la méthode de normalisation. Ainsi, on pourra appliquer le pipeline sur les données de test sans avoir à les modifier.
+Finalement, certains modèles seront plus réceptifs à des données présentées sous forme de vecteur de taille $1600$, d'autre sous forme de matrice de taille $40 \times 40$. Pour éviter de devoir modifier les données à chaque fois, nous allons créer un pipeline qui va transformer les données en \todo{De Base, sous forme matrice ou vecteur ?} matrice si nécessaire.
+
+\section{Modèles classiques}
+
+\section{Réseaux de neurones}
+
+\addcontentsline{toc}{section}{Conclusion}
+\section*{Conclusion}
+
+\end{document}
