@@ -121,10 +121,11 @@ Avant tous, nous allons établir un modèle naif qui va nous servir de référen
 
 Du fait du bruit de nos données et du faible nombre de températures distinctes, nous devons porter une attention particulière au sur-apprentissage de nos modèles.
 Prenant en compte le grand nombre de données, nous sommes partis sur un modèle de foret aléatoire. Ce modèle est très robuste et permet de limiter le sur-apprentissage. De plus, il est très rapide à entraîner et à tester. 
-Nous avons aussi limiter la profondeur de l'arbre à 5. De plus, la méthode de \textit{Bootsrap} est activée. Cette méthode permet de créer des sous-ensembles de données de la taille de l'ensemble de données originale. Ainsi, on peut entraîner plusieurs arbres sur des données différentes et les combiner pour obtenir un modèle plus robuste.
+Au niveau des hyperparamètres, nous avons limité la profondeur des arbres à 5 et nous avons aussi composé la foret de $100$ arbres. De plus, la méthode de \textit{Bootsrap} est activée. Cette méthode permet de créer des sous-ensembles de données de la taille de l'ensemble de données originale. Ainsi, on peut entraîner plusieurs arbres sur des données différentes et les combiner pour obtenir un modèle plus robuste.
 On peut donc limiter le sur-apprentissage tout en gardant un modèle performant. Les résultats obtenus sont présentés sur la figure \ref{fig:forest}.
+La figure \ref{fig:forest} possède deux objets : La densité de points de la moyenne des spins symétrisée par température calculé en utilisant la méthode de \textit{kde} et la prédiction du modèle de foret aléatoire. 
 
-Avec une MSE de $0.108$, on obtient un modèle qui est $12$ fois plus performant que le modèle naif. Cependant, on peut voir que le modèle a du mal à distinquer les hautes températures. En effet, les valeurs prédites sont toujours inférieures à $3.5$.
+Avec une MSE de $0.108$, on obtient un modèle qui est $12$ fois plus performant que le modèle naif. Cependant, on peut voir que le modèle a du mal à distinquer les hautes températures. En effet, les valeurs prédites par ce modèle sont toujours inférieures à $3.5$.
 \todo[inline]{Completer avec explication de la partie d'Anatole}
 
 \begin{figure}[h]
