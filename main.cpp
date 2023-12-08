@@ -2,7 +2,8 @@
 #include <fstream>
 #include <cmath>
 #include <armadillo>
-#include "ising.h"
+
+#include "ising.cpp"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ int main_moment() {
     return 0;
 }
 
-int main() {
+int main_base() {
     vec T = linspace<vec>(3.0, 4.0, 40);
     int nrep = 50;
     int N = 40;
@@ -45,4 +46,36 @@ int main() {
         cout << "T = " << T(i) << endl;
         save_couche(N, T(i), step, nrep);
     }
+    return 0;
+}
+
+int main_grad() {
+    string name_file = "../mydata/couche_O.O_4.0_1000.dat";
+    ofstream fichier;
+    fichier.open(name_file);
+    vec T = linspace<vec>(0.0, 4.0, 1000);
+    int N = 40;
+    int step = 1000;
+    for (int i = 0; i < T.size(); i++)
+    {
+        cout << "T = " << T(i) << endl;
+        Ising2D ising(N);
+        ising.temperature(T(i));
+        ising.boucle(step);
+        Mat<uint8_t> couche_result = ising.couche(0);
+        couche_result.reshape(1, N * N);
+        couche_result.save(fichier, raw_ascii);
+    }
+    fichier.close();
+    cout << "File " << name_file << " saved" << endl;
+    return 0;    
+}
+
+int main() {
+    Ising2D ising(20);
+    ising.temperature(4.0);
+    ising.boucle(1000);
+    Mat<uint8_t> couche_result = ising.couche(7);
+    couche_result.save("couche.dat", raw_ascii);
+    return 0;
 }

@@ -4,6 +4,9 @@ import random
 import math
 # import numba
 import time
+from tqdm import tqdm
+from joblib import Parallel, delayed
+import pickle
 
 class Ising2D:
     def __init__(self,N):
@@ -142,26 +145,22 @@ class Ising2D:
 
 start = time.time()
 
-N = 40
-T = 2.3
-n = 1000
-ising = Ising2D(N)
-ising.temperature(T)
-(m,moy,sig) = ising.boucle(n)
-couche = ising.couche(0)
+def main_compute(T) :
+    N = 40
+    n = 1000
+    ising = Ising2D(N)
+    ising.temperature(T)
+    ising.boucle(n)
+    couche = ising.couche(0)
+    return couche.reshape(N*N)
+
+T = numpy.linspace(0.0,4.0,1000)
+
+spins = Parallel(n_jobs=-1)(delayed(main_compute)(T[i]) for i in tqdm(range(len(T))))
+pickle.dump(spins, open('spins.pkl', 'wb'))
+
 
 end = time.time()
 print(end - start)
 
-import matplotlib.pyplot as plt
-plt.figure()
-plt.plot(m)
-plt.xlabel('Iterations')
-plt.ylabel('Magnetization')
-plt.title('Magnetization vs. Iterations')
-plt.show()
-
-plt.figure()
-plt.imshow(couche)
-plt.show()
 

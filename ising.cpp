@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cmath>
 #include <random>
-#include <armadillo>
 #include <fstream>
 #include <iomanip>
 
@@ -11,7 +10,8 @@ using namespace arma;
 class Ising2D {
     int N;
     int Ns;
-    Mat<int> spin;
+    Mat<uint8_t> spin;
+    Mat<uint8_t> mask;
     int nbint = 8;
     int nspin;
     double deuxp0, deuxp1;
@@ -34,7 +34,7 @@ public:
         deuxp1 = 2.0 * p1;
     };
 
-    int voisin(int i, int j) {
+    int voisin(uint8_t i, uint8_t j) {
         int ii = i;
         if (ii < 0) {
             ii = N - 1;
@@ -53,16 +53,16 @@ public:
     };
 
     void metropolis() {
-        int i = dist_d(gen);
-        int j = dist_d(gen);
-        int s = spin(j, i);
-        int a1 = s ^ voisin(i - 1, j);
-        int a2 = s ^ voisin(i + 1, j);
-        int a3 = s ^ voisin(i, j - 1);
-        int a4 = s ^ voisin(i, j + 1);
-        int R1 = a1 | a2 | a3 | a4;
-        int R2 = ((a1 | a2) & (a3 | a4)) | ((a1 & a2) | (a3 & a4));
-        int r0, r1;
+        uint8_t i = dist_d(gen);
+        uint8_t j = dist_d(gen);
+        uint8_t s = spin(j, i);
+        uint8_t a1 = s ^ voisin(i - 1, j);
+        uint8_t a2 = s ^ voisin(i + 1, j);
+        uint8_t a3 = s ^ voisin(i, j - 1);
+        uint8_t a4 = s ^ voisin(i, j + 1);
+        uint8_t R1 = a1 | a2 | a3 | a4;
+        uint8_t R2 = ((a1 | a2) & (a3 | a4)) | ((a1 & a2) | (a3 & a4));
+        uint8_t r0, r1;
         if (dist_c(gen) < deuxp0) {
             r0 = dist_s(gen);
         }
@@ -80,10 +80,10 @@ public:
 
     double moment() {
         double m = 0.0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                int s = spin(j, i);
-                for (int b = 0; b < nbint; b++) {
+        for (uint8_t i = 0; i < N; i++) {
+            for (uint8_t j = 0; j < N; j++) {
+                uint8_t s = spin(j, i);
+                for (uint8_t b = 0; b < nbint; b++) {
                     m += 2 * (s & 1) - 1;
                     s = s >> 1;
                 }
@@ -103,11 +103,11 @@ public:
         return m;
     };
 
-    Mat<int> couche(int b) {
-        Mat<int> mask(N, N, fill::ones);
-        mask.for_each([&](int&element) { element *= pow(2, b); });
+    Mat<uint8_t> couche(int b) {
+        Mat<uint8_t> mask(N, N, fill::ones);
+        mask *= pow(2, b);
 
-        Mat<int> couche_result = arma::conv_to<Mat<int>>::from(spin && mask);
+        Mat<uint8_t> couche_result = arma::conv_to<Mat<uint8_t>>::from(spin && mask);
         return couche_result;
     };
 };
@@ -146,7 +146,7 @@ int save_couche(int N, double T, int step, int nrep) {
         ising.temperature(T);
         Col<double> m = ising.boucle(step);
         for (int j = 0; j < 8; j++) {
-            Mat<int> couche_result = ising.couche(0);
+            Mat<uint8_t> couche_result = ising.couche(j);
             couche_result.reshape(1, N * N);
             couche_result.save(fichier, raw_ascii);
         }
