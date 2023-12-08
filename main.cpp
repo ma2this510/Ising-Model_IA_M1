@@ -2,12 +2,14 @@
 #include <fstream>
 #include <cmath>
 #include <armadillo>
-#include "ising.h"
+#include "ising.cpp"
 
 using namespace std;
 
-int main_moment() {
-    vec T = linspace<vec>(0.0, 4.0, 100);
+int main() {
+    vec T1 = linspace<vec>(0.0, 4.0, 100);
+    vec T2 = linspace<vec>(2.0, 2.5, 50);
+    vec T = join_cols(T1, T2);
     int nrep = 15;
     mat m = zeros<mat>(T.n_elem, 3);
 
@@ -45,4 +47,5 @@ int main_classique() {
         cout << "T = " << T(i) << endl;
         save_couche(N, T(i), step, nrep);
     }
+    return 0;
 }
