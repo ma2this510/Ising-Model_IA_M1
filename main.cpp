@@ -35,7 +35,7 @@ int main_moment() {
     return 0;
 }
 
-int main() {
+int main_classique() {
     vec T = linspace<vec>(3.0, 4.0, 40);
     int nrep = 50;
     int N = 40;
