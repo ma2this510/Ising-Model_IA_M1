@@ -73,15 +73,112 @@ Dans la plupart des modèles numériques, on travaille sans champ extérieur.
 La relative généralité de ce modèle (interactions locales et interaction individuelle avec une force extérieure) transcende la physique et permet de décrire qualitativement et parfois quantitativement une très grande variété de situations (paramagnétisme, gaz réticulaire, agents économiques, modèles écologiques, utilisation en analyse et traitement de l'image). Il donnera même lieu à un modèle plus général : le modèle de Potts (qui généralise l'aspect binaire du modèle d'Ising lié à la binarité des spins).
 
 
-Le modèle d'Ising 2D est une approche numérique de la résolution de ce problème, où chaque atome d'un cristal idéal plat et de maille carrée est associé à un pixel d'une image, et chaque spin est représenté soit par un 0, soit par un 1. Pour améliorer la validité du modèle, des conditions aux bords périodiques sont utilisées.
-
-
-À travers notre exposé sur l'intelligence artificielle, nous allons nous intéresser à un jeu de données constitué de $16 000$ images de $40 \times 40$ pixels. Chaque image est associée à une température caractéristique allant de $0.25$ à $4$ (sans unité) et à un label \textit{phase ferromagnétique} , où les spins sont globalement tous alignés ou forment des îlots de spins alignés ($|M| > 0$), et un label \textit{phase paramagnétique}, où les spins sont globalement désordonnés ($M = 0$).
+À travers notre exposé sur l'intelligence artificielle, nous allons nous intéresser à un jeu de données constitué de $16 000$ images issues d'une simulation numérique du modèle d'Ising 2D. Chaque image est associée à une température caractéristique allant de $0.25$ à $4$ (sans unité) et à un label. Le label renseigne sur la phase dans laquelle l'image se trouve. La \textit{phase ferromagnétique} est une phase où les spins sont globalement tous alignés ou forment des îlots de spins alignés ($|M| > 0$). Le label \textit{phase paramagnétique} rends compte du régime où les spins sont globalement désordonnés ($M = 0$).
 
 
 Nous allons explorer différentes méthodes pour voir quelles solutions d'intelligence artificielle nous permettent de trancher, à partir d'une image donnée, si l'on est dans la phase paramagnétique ou ferromagnétique. Nous nous intéresserons aussi à la manière dont sont générées les données du modèle d'Ising. Nous chercherons à voir s'il est possible de prédire la température d'une image de manière fiable et même s'il est possible de générer de nouvelles données sans faire appel à une simulation numérique coûteuse.
 
 \section{Génération de données}
+Afin de mieux cerner le problème initiale, nous avons recréé la simulation du modèle d'Ising 2D pour des images $40 \times 40$ comme celle présente dans le dataset.
+Le modèle d'Ising 2D est une approche numérique du problème posé en introduction où l'on fait l'hypothèse d'un cristal plat et de maille carrée pour lequel chaque atome est associé à un pixel d'une image.
+
+
+Chaque spin est représenté soit par un 0, soit par un 1. Le 1 pour un spin Up, le 0 pour un spin Down. Pour améliorer la validité du modèle, des conditions aux bords périodiques sont utilisées. Concrètement cela revient à traiter la surface d'un tore qu'on aurait dépliée (cf. Figure \ref{fig:ising2D}). 
+
+\begin{figure}[h]
+	\begin{subfigure}{0.5\textwidth}
+		\centering
+		\includegraphics[width=0.95\linewidth]{./figures/torus_left.jpg}
+		\caption{Les spins sont soit Up = 1, soit Down = 0}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{./figures/torus_right.jpg}
+		\caption{Conditions aux bords périodiques}
+	\end{subfigure}
+	\caption{Représentation du modèle d'Ising 2D}
+	\label{fig:ising2D}
+\end{figure}
+
+
+Le Hamiltonien du problème est donnée par l'équation :
+
+\begin{equation*}
+    H = -J  \displaystyle \sum_{i,j}\sigma_{i}\sigma_{j} - h\displaystyle \sum_{i} \sigma_{i}
+\end{equation*}
+
+où $\sigma_{i} = \pm 1$. Celà dit, comme nous travaillons avec des $0$ et des $1$, il y a quelques manipulations à réaliser sur l'Hamiltonien. On fait de plus abstraction de la deuxième partie de l'hamiltonien qui traite du paramgnétisme.
+
+Il nous reste donc qu'à traiter : 
+\begin{equation*}
+    H = -J  \displaystyle \sum_{i,j}(2\sigma_{i}-1)(2\sigma_{j}-1)
+\end{equation*}
+
+Que signifie cet Hamiltonien ? C'est un Hamiltonien de couplage entre spin. À priori, pour respecter la physique du système qu'on cherche à étudier, ce couplage ne se réalise qu'à courte portée, et donc que entre spin "plus proche voisin" puisqu'il s'agit d'une intéraction d'échange à courte portée. Par ailleurs, on choisie de travailler avec des constantes dimentionnées de sorte que: $\frac{J}{K_B}=1$
+
+On va maintenant se rapprocher d'un des spins de notre modèle. Situé au centre, ses plus proches voisins forment une croix suisse autour de lui. On calcule son Hamiltonien local : 
+
+\begin{equation*}
+H_{local} = E_{ij} =  (2\sigma_{i}-1) \displaystyle \sum_{j}(2\sigma_{j}-1) = (2\sigma_{i}-1) \times \bigg[ 2\times( R + L + U + D ) -4 \bigg]
+\end{equation*}
+avec :
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{H.png}
+	\caption{Hamiltonien local}
+	\label{fig:H}
+\end{figure}
+
+Partons d'un système idéal où tous les spins sont alignées. En raison de l'agitation thermique un spin aléatoire du cristal inverse son sens. La variation d'énergie associé à ce changement est donnée par : 
+\begin{equation*}
+\Delta E = E_f - E_i
+\end{equation*}
+Et la probabilité qu'un tel changement s'opère est proportionelle au poids de Boltzmann :  
+
+\begin{equation*}
+P(\Delta E) \propto e^{-\beta \Delta E} = e^{-\beta \Delta E}
+\end{equation*}
+
+L'idée est la suivante :  l'ordinateur va piocher une case au hasard calculer le $\Delta E$ associé. Ce $\Delta E$ ne peux prendre que 5 valeurs possibles : 
+\begin{center}
+\begin{tabular}{|l|m{4cm}|}
+\hline
+n voisin de sens opposé & $\Delta E $\\
+\hline
+0 & 8\\
+1 & 4\\ 
+2 & 0\\ 
+3 & -4\\
+4 & -8\\\hline
+
+\end{tabular}
+\end{center}
+
+\vspace{4mm}
+
+ Dans le cas ou $\Delta E \in \{0,-4,-8\}$ l'energie est minimisée donc le changement s'opère naturellement, l'ordinateur change le pixel d'état.
+ Dans le cas inverse, c'est à dire  $\Delta E \in \{4,8\}$ un nombre aléatoire $x$ tiré selon une distribution uniforme entre 0 et 1 et est comparer à $e^{-\beta \Delta E}$.
+ Si $x < e^{-\beta \Delta E}$ alors l'ordinateur change le pixel d'état. Sinon il ne le fait pas.
+
+ On remarque que plus T est important plus la probabilité de transition est importante.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{proba.jpg}
+	\caption{probabilité de transition en fonction de la température}
+	\label{fig:H}
+\end{figure}
+
+On peut donc alors lancer la simulation, pour une température fixé on réalise un certains nombre de tentative de changement de spin. Le système va alors se relaxer jusqu'à un équilibre où la moyenne des spins qui composent l'image est stable tentative successive de changement de l'état d'un spin de l'image.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{simulation_ising.jpg}
+	\caption{Évolution du ratio spin up spin down pour $T=2$ et $1,6$ million itération }
+	\label{fig:H}
+\end{figure}
+
 
 \section{Pré-traitement des données}
 Maintenant que nous avons généré nos données, nous devons nous faire une idée de la forme de nos données afin de pouvoir les traiter de la meilleure façon possible.
