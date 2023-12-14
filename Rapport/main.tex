@@ -44,7 +44,7 @@
 	\vspace{12pt} % Whitespace
 }
 
-\author{\LARGE A. Cremel-Schlemer \large (3800159) \\ \LARGE G. Carvalho \large (xxxxxxxx) \\ \LARGE M. Panet \large (28705836)} % Your name
+\author{\LARGE A. Cremel-Schlemer \large (3800159) \\ \LARGE G. Carvalho \large (28709594) \\ \LARGE M. Panet \large (28705836)} % Your name
 
 \date{\normalsize\today} % Today's date (\today) or a custom date
 
@@ -235,6 +235,72 @@ Avec une MSE de $0.108$, on obtient un modèle qui est $12$ fois plus performant
 \subsection{Analyse par l'état individuel des spins}
 
 \section{Réseaux de neurones}
+\subsection{Objectif}
+Dans le cadre de ce projet, notre objectif final était de développer un modèle performant capable de classer des matrices de taille 40x40 en deux catégories distinctes. Comme dans le modèle d’Ising l’état d’un spin est dépendant de ces plus proches voisins, le plus naturel était de créer un réseau neuronal convolutif car il prend en compte les corrélations locales entre pixels voisins. La performance de notre classification est alors dépendante de l’architecture de notre modèle, de la manière dont il extrait et apprend les caractéristiques pertinentes des matrices en entrée.
+
+Dans cette partie, nous allons analyser l’architecture du modèle qu’on a créé. On va discuter pourquoi on a choisi chaque couche et quel rôle elles jouent dans notre modèle. On analysera ensuite nos étapes d’entraînement puis on discutera les méthodes que nous avons utilisé pour évaluer nos performances. 
+
+\subsection{Préparation des données}
+\todo{section à compléter}
+
+\subsection{Architecture du modèle}
+L’ensemble de l’architecture repose sur des principes de convolution, pooling et de couches entièrement connectées. La combinaison de ces différentes couches crée une architecture cohérente et un modèle performant.
+
+Notre modèle commence par une première couche de convolution 2D, qui utilise 16 filtres de taille 5x5. Cette couche veut extraire des caractéristiques de bas-niveau, soit des bords ou des formes simples présentes dans les données. Cette première couche de convolution est suivie d’une couche de max pooling qui permet, en faisant un sous-échantillonnage, de compresser l’information que l’on veut faire passer à la couche suivante. 
+
+On applique ensuite à nouveau ce processus : on a une deuxième couche de convolution 2D a 32 filtres de taille 3x3 et une nouvelle couche de max pooling. Avec cette deuxième couche de convolution, on souhaite capturer des motifs plus complexes et abstraits. On a augmenté le nombre de filtres de la première couche de convolution car on veut augmenter la capacité du modèle : chaque filtre pourra se spécialiser dans la détection de certaines caractéristiques et donc le modèle apprendra plus de relations complexes. Avec la couche de max pooling, on souhaite réduire davantage la dimension spatiale. Finalement, on utilise une dernière couche de convolution 2D avec 64 filtres de taille 3x3, suivie encore d’une autre opération de max pooling.
+
+Ensuite, on utilise une couche Flatten pour aplatir les caractéristiques et motifs extraits de nos couches de convolution pour réduire la dimension de notre matrice. Il s’agit d’une opération assez simple avant d’introduire des couches entièrement connectées Dense. On a utilisé trois couches consécutives : la première avec 128 neurones, la deuxième avec 64 neurones puis la troisième avec 128 neurones. Ces trois couches ont comme objectif d’apprendre les complexités des caractéristiques extraites, afin de réaliser l’objectif de notre modèle. Notre deuxième couche Dense a moins de neurones pour réduire les dimensions et additionner encore un peu de complexité à notre modèle, afin de tout bien représenter. Cette architecture que nous avons utilisée permet une certaine flexibilité au modèle et de s’adapter à la tâche de la classification binaire. 
+
+Finalement, l’architecture de notre modèle se termine par une couche de sortie avec une seule cellule, activée à la fonction d’activation sigmoïde. Cela nous permet d’obtenir à la sortie de notre modèle une probabilité que notre sortie appartienne à la classe positive, ce qui correspond bien à ce qui est attendu lors d’une classification binaire. 
+
+L’architecture de notre modèle est présentée sous forme d’image dans la figure \ref{fig:model}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\linewidth]{./figures/model.png}
+	\caption{Architecture du modèle}
+	\label{fig:model}
+\end{figure}
+
+\subsection{Entraînement du modèle}
+La procédure d’entraînement consiste à entraîner le modèle à réaliser une classification binaire : identifier s’il y a eu une transition de phase par rapport aux matrices qui décrivent notre système. Avant l’entraînement, nous avons compilé notre modèle avec l’algorithme optimiseur Adam et on a utilisé binary crossentropy comme fonction de coût, une fonction de coût très efficace pour les tâches de classification binaire qui mesure la différence entre les prédictions binaires et les vrais résultats. Finalement, l’entraînement de notre modèle a duré que 11 epochs, avec un batch size de 128. Notre entraînement a duré que 11 epochs pour éviter le sur-apprentissage, puisque nous avons utilisé la méthode de l’arrêt anticipé (early stopping), avec une patience de 5. L’entraînement du modèle a été fait avec \todo{completer} x données et a pris que 40 secondes.
+
+Pendant l’entraînement, l’erreur d’entraînement et l’erreur de validation sont enregistrés pour chaque epoch. Cela nous permet de suivre l’entraînement de notre modèle et de détecter des signes de sur-apprentissage ou sous-apprentissage. En suivant cette approche et cette architecture, nous sommes parvenus à un modèle très efficace, dont nous allons étudier les performances maintenant. 
+
+\subsection{Evaluation des performances du modèle}
+L’objectif principal du modèle est de capturer des motifs complexes qui permettront au modèle d’apprendre les complexités de nos matrices données en entrée et puis faire des prédictions sur à quelle classe appartient chaque matrice. Avec l’enregistrement de l’entraînement et la possibilité de faire des essais avec notre jeu de test, on peut évaluer notre modèle. 
+
+Tout d’abord, on peut analyser la performance de notre modèle en prenant en compte l’erreur de la fonction coût sur l’ensemble de données de validation, qui est de seulement \todo{comparer aux autres modèles} 0.0084. Cela indique que le modèle est très performant : il a atteint un niveau très bas de perte sur les données de validation et a une très bonne capacité de se généraliser à de nouvelles données. On peut aussi vérifier la précision (accuracy) de notre modèle sur les données de test : 0.99. Notre modèle est capable de classer correctement 99\% des échantillons dans l’ensemble de test. Cela renforce à nouveau l’idée que notre modèle a une très bonne capacité à généraliser et qu’il est très adéquat à la classification binaire. Nous avons aussi calculé une autre métrique intéressante : la sensibilité, mesurant la capacité du modèle à identifier tous les exemples positifs réels dans l'ensemble de données et nous trouvons une valeur de 0.99, indiquant une excellente capacité à mesurer des vrais positifs.
+
+Ensuite, nous pouvons étudier l’entraînement de notre modèle. Dans la figure \ref{fig:train}, nous observons l’évolution de l’erreur de la fonction de coût des données d’entraînement et de validation au cours de l’entraînement (graphe en haut). On remarque que les courbes représentant ces données sont très proches dès la première epoch jusqu’à l’epoch 6 et puis commencent à diverger ce qui peut être un signe de sur-apprentissage. Cependant, cela peut être négligeable dû à la simple différence de 0.005 entre les deux courbes. On souligne encore que l’évolution de l’entraînement est très légère, sans grande amélioration de l’erreur sur la fonction de coût. Encore dans la figure \ref{fig:train}, on observe l’évolution de la précision au cours de l’entraînement (graphe en bas). On remarque que dès la première epoch jusqu’à la fin de l’entraînement, ces deux courbes sont toujours très proches autour de 0.998, ce qui confirme à nouveau excellente précision de notre modèle. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.66\linewidth]{./figures/train.png}
+	\caption{Évolution de l'entraînement}
+	\label{fig:train}
+\end{figure}
+
+De plus, nous pouvons établir la matrice de confusion de notre modèle, que nous pouvons observer à la figure \ref{fig:matrix}. La matrice de confusion résume le nombre de prédictions correctes et incorrectes faites par le modèle sur l’ensemble des données de test. On observe les vrais négatifs et les vrais positifs, représentés respectivement en haut à gauche et en bas à droite de la matrice de confusion. Ces nombres représentent les prédictions correctes du modèle, où il a réussi à identifier correctement les instances des deux classes,  c’est-à-dire s’il y avait une transition de phase ou pas. Lors des prédictions sur le jeu de test, nous avons 14 158 vrais négatifs (nombre d’échantillons qui étaient réellement dans la classe 0 et correctement identifiés par le modèle) et 17 781 vrais positifs (classe 1 correctement identifiée). De plus, on peut encore observer les faux négatifs et les faux positifs, représentés respectivement en bas à gauche et en haut à droite de la matrice de confusion. Ils représentent les erreurs de classification du modèle. On a 36 faux négatifs et 23 faux positifs, ce qui est négligeable face au nombre de prédictions correctes. Le modèle créé est alors extrêmement efficace à prédire la transition de phase.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{./figures/matrix.png}
+	\caption{Matrice de confusion}
+	\label{fig:matrix}
+\end{figure}
+
+Finalement, nous pouvons tracer la courbe ROC (Receiver Operating Characteristic), vu dans la figure \ref{fig:ROC}. Il s’agit d’un autre outil d’évaluation de la performance d’un modèle de classification binaire. Elle représente graphiquement la relation entre le taux de vrais positifs, connu aussi comme la sensibilité (ou recall) et le taux de faux positifs lorsqu’on fait varier le seuil de classification. On observe qu’on obtient un AUC (Area Under Curve) de 1.00, ce qui nous indique une performance exceptionnelle de notre modèle. Une valeur de 1.00 signifie une séparation parfaite des classes. Le modèle est très précis dans sa capacité à distinguer les exemples positifs des négatifs.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{./figures/ROC.png}
+	\caption{Courbe ROC}
+	\label{fig:ROC}
+\end{figure}
+
+Dans cette partie, nous avons construit un réseau neuronal convolutif performant capable de classer efficacement nos données par rapport à l’existence ou pas d’une transition de phase. L’architecture du modèle choisie permet d’extraire les caractéristiques complexes de nos données et l’entraînement a été optimisée pour cette tâche de classification binaire. Les métriques de notre modèle tel que la précision, la sensibilité, la matrice de confusion et la courbe ROC montrent la robustesse de notre modèle. Nous avons alors créé un modèle à la fois précis et efficace, qui démontre une performance exceptionnelle dans le classement des matrices du modèle Ising.  
 
 \addcontentsline{toc}{section}{Conclusion}
 \section*{Conclusion}
