@@ -223,12 +223,23 @@ La figure \ref{fig:forest} possède deux objets : La densité de points de la mo
 
 Avec une MSE de $0.108$, on obtient un modèle qui est $12$ fois plus performant que le modèle naif. Cependant, on peut voir que le modèle a du mal à distinquer les hautes températures. En effet, les valeurs prédites par ce modèle sont toujours inférieures à $3.5$.
 Cela peut s'expliquer par le fait que, à haute température, la densité est quasiment nulle. Ainsi, lorsque le modèle va essayer de prédire une configuration de spin à haute température, il va prédire la température correspondant plus ou moins à la moyenne des températures capable de produire une configuration de spin similaire. Cela apparaît clairement sur la figure \ref{fig:forest}.
+Nous pouvons, maintemant, utiliser la prédiction en température de notre modèle pour déterminer la phase du système. Pour cela, nous allons comparer la valeur prédite à la valeur de la température critique. Si la valeur prédite est supérieure à la valeur de la température critique, alors le système est dans la phase paramagnétique. Sinon, il est dans la phase ferromagnétique.
+Théoriquement, la température critique d'un modèle d'Ising 2D est de \todo{cite une source}$2.269$. On retrouve les résultats de cette analyse sur la figure \ref{fig:forest_matrix}.  Notre modèle est capable de prédire la phase du système avec une précision de $98.8\%$. On a donc un modèle performant.
 
 \begin{figure}[h]
-	\centering
-	\includegraphics[width=0.75\linewidth]{./figures/forest.png}
-	\caption{Résultats du modèle de foret aléatoire}
-	\label{fig:forest}
+	\begin{subfigure}[c]{0.65\textwidth}
+		\centering
+		\includegraphics[width=1.1\linewidth]{./figures/forest.png}
+		\caption{Résultats du modèle}
+		\label{fig:forest}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.3\textwidth}
+		\centering
+		\includegraphics[width=1.3\linewidth]{./figures/forest_matrix.png}
+		\caption{Matrice de confusion}
+		\label{fig:forest_matrix}
+	\end{subfigure}
+	\caption{Modèle de foret aléatoire}
 \end{figure}
 
 \subsection{Analyse par l'état individuel des spins}
@@ -281,13 +292,13 @@ Ensuite, nous pouvons étudier l’entraînement de notre modèle. Dans la figur
 	\label{fig:train}
 \end{figure}
 
-De plus, nous pouvons établir la matrice de confusion de notre modèle, que nous pouvons observer à la figure \ref{fig:matrix}. La matrice de confusion résume le nombre de prédictions correctes et incorrectes faites par le modèle sur l’ensemble des données de test. On observe les vrais négatifs et les vrais positifs, représentés respectivement en haut à gauche et en bas à droite de la matrice de confusion. Ces nombres représentent les prédictions correctes du modèle, où il a réussi à identifier correctement les instances des deux classes,  c’est-à-dire s’il y avait une transition de phase ou pas. Lors des prédictions sur le jeu de test, nous avons 14 158 vrais négatifs (nombre d’échantillons qui étaient réellement dans la classe 0 et correctement identifiés par le modèle) et 17 781 vrais positifs (classe 1 correctement identifiée). De plus, on peut encore observer les faux négatifs et les faux positifs, représentés respectivement en bas à gauche et en haut à droite de la matrice de confusion. Ils représentent les erreurs de classification du modèle. On a 36 faux négatifs et 23 faux positifs, ce qui est négligeable face au nombre de prédictions correctes. Le modèle créé est alors extrêmement efficace à prédire la transition de phase.
+De plus, nous pouvons établir la matrice de confusion de notre modèle, que nous pouvons observer à la figure \ref{fig:matrix_CNN}. La matrice de confusion résume le nombre de prédictions correctes et incorrectes faites par le modèle sur l’ensemble des données de test. On observe les vrais négatifs et les vrais positifs, représentés respectivement en haut à gauche et en bas à droite de la matrice de confusion. Ces nombres représentent les prédictions correctes du modèle, où il a réussi à identifier correctement les instances des deux classes,  c’est-à-dire s’il y avait une transition de phase ou pas. Lors des prédictions sur le jeu de test, nous avons 14 158 vrais négatifs (nombre d’échantillons qui étaient réellement dans la classe 0 et correctement identifiés par le modèle) et 17 781 vrais positifs (classe 1 correctement identifiée). De plus, on peut encore observer les faux négatifs et les faux positifs, représentés respectivement en bas à gauche et en haut à droite de la matrice de confusion. Ils représentent les erreurs de classification du modèle. On a 36 faux négatifs et 23 faux positifs, ce qui est négligeable face au nombre de prédictions correctes. Le modèle créé est alors extrêmement efficace à prédire la transition de phase.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{./figures/matrix.png}
+	\includegraphics[width=0.5\linewidth]{./figures/matrix_CNN.png}
 	\caption{Matrice de confusion}
-	\label{fig:matrix}
+	\label{fig:matrix_CNN}
 \end{figure}
 
 Finalement, nous pouvons tracer la courbe ROC (Receiver Operating Characteristic), vu dans la figure \ref{fig:ROC}. Il s’agit d’un autre outil d’évaluation de la performance d’un modèle de classification binaire. Elle représente graphiquement la relation entre le taux de vrais positifs, connu aussi comme la sensibilité (ou recall) et le taux de faux positifs lorsqu’on fait varier le seuil de classification. On observe qu’on obtient un AUC (Area Under Curve) de 1.00, ce qui nous indique une performance exceptionnelle de notre modèle. Une valeur de 1.00 signifie une séparation parfaite des classes. Le modèle est très précis dans sa capacité à distinguer les exemples positifs des négatifs.
