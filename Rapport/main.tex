@@ -76,7 +76,7 @@ Nous allons explorer différentes méthodes pour voir quelles solutions d'intell
 \newpage
 \section{Génération de données}
 
-Afin de mieux cerner le problème initial, nous avons recréé la simulation du modèle d'Ising 2D pour des images de dimensions $40 \times 40$, comme celle présente dans le dataset. 
+Afin de mieux cerner le problème initial, nous avons recréé la simulation du modèle d'Ising 2D pour des images de dimensions $40 \times 40$, comme celle présente dans le dataset.
 
 \subsection{Théorie, Hypothèses et Hamiltonien}
 Le modèle d'Ising 2D est une approche numérique du problème posé en introduction, où l'on fait l'hypothèse d'un cristal ferromagnétique plat et de maille carrée pour lequel chaque atome est associé à un pixel d'une image.
@@ -119,7 +119,7 @@ Avec $\sigma_{i} \in \{0,1\}$
 Que signifie cet Hamiltonien ? C'est un Hamiltonien de couplage entre spins. Il est responsables du ferromagnétisme du matériau. À priori, pour respecter la physique du système que l'on cherche à étudier, ce couplage ne se réalise qu'à courte portée, entre particules identiques, ici le spin. Les spins "plus proches voisins" subissent alors une interaction d'échange à courte portée $\pm J$. Par simplicité et pour garder l'aspect très général de l'algorithme, on choisit de travailler avec des constantes adimensionnées de sorte que : $\frac{J}{K_B} = 1$.
 
 \subsection{Agitation thermique et probabilité}
-Nous allons maintenant nous approcher d'un des spins de notre modèle. Situé au centre, ses plus proches voisins forment une croix suisse autour de lui. Calculons maintenant son Hamiltonien local : 
+Nous allons maintenant nous approcher d'un des spins de notre modèle. Situé au centre, ses plus proches voisins forment une croix suisse autour de lui. Calculons maintenant son Hamiltonien local :
 
 \begin{equation*}
 	H_{local} = E_{ij} =  (2\sigma_{i}-1) \displaystyle \sum_{j}(2\sigma_{j}-1) = (2\sigma_{i}-1) \times \bigg[ 2\times( R + L + U + D ) -4 \bigg]
@@ -128,7 +128,7 @@ avec :
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{H.png}
+	\includegraphics[width=0.5\linewidth]{./figures/H.png}
 	\caption{Hamiltonien local}
 	\label{fig:H}
 \end{figure}
@@ -136,16 +136,16 @@ avec :
 Partons d'un système idéal où tous les spins sont alignés. En raison de l'agitation thermique, un spin aléatoire du cristal inverse son sens. La variation d'énergie associée à ce changement est donnée par :
 
 \begin{equation*}
-\Delta E = E_f - E_i
+	\Delta E = E_f - E_i
 \end{equation*}
 
 Et la probabilité qu'un tel changement s'opère est proportionnelle au poids de Boltzmann :
 
 \begin{equation*}
-P(\Delta E) \propto e^{-\beta \Delta E} \propto e^{-\frac{\Delta E}{T}}
+	P(\Delta E) \propto e^{-\beta \Delta E} \propto e^{-\frac{\Delta E}{T}}
 \end{equation*}
 
-L'idée est la suivante : l'ordinateur va piocher une case au hasard, calculer le $\Delta E$ associé. Ce $\Delta E$ ne peut prendre que 5 valeurs possibles : 
+L'idée est la suivante : l'ordinateur va piocher une case au hasard, calculer le $\Delta E$ associé. Ce $\Delta E$ ne peut prendre que 5 valeurs possibles :
 
 \begin{center}
 	\begin{tabular}{|l|m{4cm}|}
@@ -168,7 +168,7 @@ Nous remarquons que plus $T$ est élevée, plus la probabilité de transition es
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{proba.jpg}
+	\includegraphics[width=0.5\linewidth]{./figures/proba.jpg}
 	\caption{probabilité de transition en fonction de la température}
 	\label{fig:H}
 \end{figure}
@@ -176,10 +176,10 @@ Nous remarquons que plus $T$ est élevée, plus la probabilité de transition es
 On peut alors lancer la simulation. Pour une température fixée, nous réalisons un certain nombre de tentatives de changement de spin. Le système va se relaxer jusqu'à atteindre un équilibre, où la moyenne des spins composant l'image est stable après chaque tentative successive de changement de l'état d'un spin de l'image.
 
 \begin{figure}[h]
-\centering
-\includegraphics[width=0.5\linewidth]{simulation_ising.jpg}
-\caption{Évolution du ratio spin up/spin down pour $T=2$ et $1,6$ million d'itérations.}
-\label{fig:H}
+	\centering
+	\includegraphics[width=0.5\linewidth]{./figures/simulation_ising.jpg}
+	\caption{Évolution du ratio spin up/spin down pour $T=2$ et $1,6$ million d'itérations.}
+	\label{fig:H}
 \end{figure}
 
 \subsection{Stabilité, cohérence de la solution et considérations techniques}
@@ -189,30 +189,32 @@ Pour chaque température, le temps de relaxation du système est plus ou moins l
 En revanche, pour T proche de 0 et un système de départ homogène avec autant de 0 que de 1, le temps de relaxation est plus lent et fait apparaître de nouveaux états d'équilibre. Les spins peuvent tous s'aligner dans un sens ou dans un autre. Il existe une autre formation, de moment magnétique total nul où il y a coexistence d'une bande up et d'une bande down. Avec l'analogie du tore, c'est comme si on avait trempé un donut dans du chocolat jusqu'à la moitié. C'est une situation qui se rapproche de la situation dite d'antiferromagnétisme (\href{https://couleur-science.eu/?d=262e6c--ferromagnetisme-diamagnetisme-paramagnetisme}{lien}).
 
 \begin{figure}[h]
-\centering
-\includegraphics[width=0.3\linewidth]{./figures/donut.jpg}
-\caption{Artefact à basse température $M=0$}
-\label{fig:H}
+	\centering
+	\includegraphics[width=0.3\linewidth]{./figures/donut.jpg}
+	\caption{Artefact à basse température $M=0$}
+	\label{fig:H}
 \end{figure}
 
 Pour éviter des situations non souhaitées, nous initialisons la simulation avec un ratio de 0.25\% ou 0.75\% de 1. Cela facilite la convergence vers un état d'équilibre dans les basses et les hautes températures et limite l'apparition de figures intermédiaires qui ne correspondraient pas à la physique que l'on cherche à mettre en avant (ferromagnétisme).
 
-Le temps de calcul avec un algorithme non optimisé écrit en Python est lent. Générer 160,000 nouvelles données est très coûteux. Cela est lié à plusieurs choses. Premièrement, Python est un langage de haut niveau, intelligible par un humain mais très éloigné d'un langage machine comme l'assembleur où la nature des données est très spécifiquement choisie et traitée. En Python, il existe donc une procédure de "traduction" de l'humain vers la machine qui est coûteuse et conduit à des performances réduites. Il est possible d'optimiser le programme avec des principes généraux de réduction du nombre de calculs à effectuer pour réaliser une tâche (calcul en amont de certaines variables, etc.). 
+Le temps de calcul avec un algorithme non optimisé écrit en Python est lent. Générer 160,000 nouvelles données est très coûteux. Cela est lié à plusieurs choses. Premièrement, Python est un langage de haut niveau, intelligible par un humain mais très éloigné d'un langage machine comme l'assembleur où la nature des données est très spécifiquement choisie et traitée. En Python, il existe donc une procédure de "traduction" de l'humain vers la machine qui est coûteuse et conduit à des performances réduites. Il est possible d'optimiser le programme avec des principes généraux de réduction du nombre de calculs à effectuer pour réaliser une tâche (calcul en amont de certaines variables, etc.).
 
 Il est aussi possible d'écrire ce même code dans un langage compilé, comme le C++, qui est un langage dit "typé", c'est-à-dire que l'utilisateur doit faire un effort pour indiquer à l'ordinateur la nature des variables avec lesquelles il travaille pour faciliter le travail de "traduction" vers un langage machine. Cela évite "l'interprétation" au moment de la compilation du programme (la "traduction") et le programme est donc généralement plus rapide.
 
-Il est possible, en Python et en C++, d'accélérer le programme par la parallélisation de certains calculs. C'est-à-dire que l'ordinateur va exécuter la même tâche en parallèle pour gagner du temps, un peu comme si nous, humains, pouvions recopier simultanément un texte avec la main gauche et la main droite sur deux feuilles distinctes. Ici, l'ajout de nouveaux points se fait en parallèle. 
+Il est possible, en Python et en C++, d'accélérer le programme par la parallélisation de certains calculs. C'est-à-dire que l'ordinateur va exécuter la même tâche en parallèle pour gagner du temps, un peu comme si nous, humains, pouvions recopier simultanément un texte avec la main gauche et la main droite sur deux feuilles distinctes. Ici, l'ajout de nouveaux points se fait en parallèle.
 
 Mais il y a un problème : si en parallèle on modifie des pixels adjacents, il risque d'y avoir un conflit dans le calcul de l'énergie. Ce problème n'est pourtant pas très important dans une image 40 par 40 dès lors que le nombre d'exécutions en parallèle n'est pas trop grand. En effet, pour 16 tâches en parallèle, $16 \times 9 = 144$ pixels sont manipulés en parallèle, ce qui représente une fraction de 9\% de l'image. En approximation, on peut dire que les erreurs en énergie sont suffisamment négligeables. Nous générons les données suivantes avec cette hypothèse et cela semble plutôt correct.
 
 \begin{figure}[h]
-\centering
-\includegraphics[width=0.95\linewidth]{./figures/new_data_compare.png}
-\caption{Nouvelles figures et comparaison avec le dataset}
-\label{fig:H}
+	\centering
+	\includegraphics[width=0.95\linewidth]{./figures/new_data_compare.png}
+	\caption{Nouvelles figures et comparaison avec le dataset}
+	\label{fig:H}
 \end{figure}
 
 Pour prendre en compte les probabilités correctement avec la parallélisation et pour accélérer le calcul par des opérations très bas niveau, il faut se tourner vers l'algorithme de Metropolis-Hastings mis en place en 1953.
+
+Il existe aussi une autre possibilité, celle de générer de nouvelles images avec de l'intelligence artificielle.
 
 \section{Pré-traitement des données}
 Maintenant que nous avons généré nos données, nous devons nous faire une idée de la forme de nos données afin de pouvoir les traiter de la meilleure façon possible.
@@ -304,13 +306,6 @@ Finalement, l’architecture de notre modèle se termine par une couche de sorti
 
 L’architecture de notre modèle est présentée sous forme d’image dans la figure \ref{fig:model}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.4\linewidth]{./figures/model.png}
-	\caption{Architecture du modèle}
-	\label{fig:model}
-\end{figure}
-
 \subsection{Entraînement du modèle}
 La procédure d’entraînement consiste à entraîner le modèle à réaliser une classification binaire : identifier s’il y a eu une transition de phase par rapport aux matrices qui décrivent notre système. Avant l’entraînement, nous avons compilé notre modèle avec l’algorithme optimiseur Adam et on a utilisé binary crossentropy comme fonction de coût, une fonction de coût très efficace pour les tâches de classification binaire qui mesure la différence entre les prédictions binaires et les vrais résultats. Finalement, l’entraînement de notre modèle a duré que 11 epochs, avec un batch size de 128. Notre entraînement a duré que 11 epochs pour éviter le sur-apprentissage, puisque nous avons utilisé la méthode de l’arrêt anticipé (early stopping), avec une patience de 5. L’entraînement du modèle a été fait avec les $160 \ 000$ matrices que l'on nous as fournies et a pris que 40 secondes.
 
@@ -345,18 +340,110 @@ De plus, nous pouvons établir la matrice de confusion de notre modèle, que nou
 		\caption{Courbe ROC}
 		\label{fig:ROC}
 	\end{subfigure}
-	
+
 \end{figure}
 
 Finalement, nous pouvons tracer la courbe ROC (Receiver Operating Characteristic), vu dans la figure \ref{fig:ROC}. Il s’agit d’un autre outil d’évaluation de la performance d’un modèle de classification binaire. Elle représente graphiquement la relation entre le taux de vrais positifs, connu aussi comme la sensibilité (ou recall) et le taux de faux positifs lorsqu’on fait varier le seuil de classification. On observe qu’on obtient un AUC (Area Under Curve) de 1.00, ce qui nous indique une performance exceptionnelle de notre modèle. Une valeur de 1.00 signifie une séparation parfaite des classes. Le modèle est très précis dans sa capacité à distinguer les exemples positifs des négatifs.
 
 \begin{figure}[h]
-	
+
 \end{figure}
 
 Dans cette partie, nous avons construit un réseau neuronal convolutif performant capable de classer efficacement nos données par rapport à l’existence ou pas d’une transition de phase. L’architecture du modèle choisie permet d’extraire les caractéristiques complexes de nos données et l’entraînement a été optimisée pour cette tâche de classification binaire. Les métriques de notre modèle tel que la précision, la sensibilité, la matrice de confusion et la courbe ROC montrent la robustesse de notre modèle. Nous avons alors créé un modèle à la fois précis et efficace, qui démontre une performance exceptionnelle dans le classement des matrices du modèle Ising.
 
+\section{Génération d'images}
+Dans cette partie, nous allons étudier comment générer de nouvelles images crédibles à partir du jeu de données à l'aide de réseaux convolutionnels.
+
+Cette section reste inachevée en raison des difficultés rencontrées lors de la génération de ces modèles. En tant qu'auteur de tous ces réseaux (environ 300 essais avec différentes architectures), je pense que le problème réside dans la nature des images. Ce sont des images de bruit. Au-delà de la température de Curie, les images se ressemblent toutes, peu importe la température. Il est donc difficile pour l'ordinateur de comprendre quelle image est associée à quelle température, ce qui est également le cas pour les basses énergies.
+
+Un deuxième problème est que les réseaux convolutionnels ont tendance à créer des images bruitées ou floues, ce qui n'aide pas l'algorithme à produire des images nettes de bruit composées strictement de 0 et de 1, même avec des fonctions d'activation sigmoid à la fin du parcours.
+
+\subsection{Auto-encodeur}
+Nous allons discuter de l'une des méthodes que nous avons choisies pour générer de nouvelles données. La technique des autoencodeurs est une approche de synthèse d'image basée sur l'utilisation de deux sous-réseaux de neurones mis bout à bout. Le premier, l'encodeur, est un réseau qui prend en entrée une image et, par réduction de dimension successive, parvient à un sous-espace de dimension inférieure appelé "espace latent". Cet espace latent est censé concentrer l'information de l'image dans un format plus compact. La deuxième partie de l'autoencodeur est le décodeur, un réseau qui part de l'espace latent et augmente ses dimensions jusqu'à atteindre la dimension souhaitée, qui est celle d'une nouvelle image.
+
+Le réseau s'entraîne en partant d'une image du jeu de données d'entraînement, puis, cherche à reproduire une image du même ensemble de données. Il peut s'agir de la même image ou d'une autre, l'objectif étant de générer une nouvelle image cohérente.
+
+L'entraînement de l'encodeur et du décodeur se déroule de manière intégrée, les deux réseaux formant ainsi un seul. Une fois que l'autoencodeur est entraîné, il peut être dissocié. On peut alors utiliser l'encodeur pour réduire dans l'espace latent toutes les images du jeu d'entraînement ou du jeu de test associées à une température donnée. Cela permet de générer dans l'espace latent le vecteur caractéristique de la température spécifiée. Ce vecteur caractéristique représente en réalité une direction dans un espace de dimension définie par l'espace latent, associée à une caractéristique dominante du jeu de données d'entraînement. Ainsi, il est possible de créer un nouveau vecteur pointant dans cette direction pour générer, à l'aide du décodeur, de nouvelles images.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{./figures/latent.jpg}
+	\caption{Représentation dans l'espace latent}
+	\label{fig:latent}
+\end{figure}
+
+Cette reconstruction est souvent sujette à une certaine imprécision, nécessitant ainsi l'ajout d'un traitement postérieur pour assurer la cohérence de l'image de sortie (cf. figure \ref{fig:tiple}). J'applique un seuillage ainsi que l'ajout de bruit pour faire ressortir des zones sombres avec un soupçon de blanc, et des zones blanches avec une touche de sombre. Il s'agit d'un traitement encore à un stade prototypique.
+
+L'entraînement se révèle capricieux lorsque la température (T) est élevée, mais devient plus stable à basse température, ce qui est normal étant donné que tous les filtres convergent vers 0.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{./figures/evol_T_1.jpg}
+	\caption{Convergence des fonction de coûts à $T = 1.00$}
+	\label{fig:T1}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{./figures/evol_T_4.jpg}
+	\caption{Convergence des fonction de coûts à $T = 4.00$}
+	\label{fig:T4}
+\end{figure}
+
+Une autre méthode pour évaluer la cohérence de l'image de sortie consiste à utiliser les réseaux adversariaux (Adversarial Neural Networks, en anglais).
+
+\subsection{Réseaux Adversariaux}
+
+Cette brève section présente l'une des techniques que nous avons essayées pour surmonter les limites de l'auto-encodeur. Bien qu'elle n'ait pas abouti, nous allons brièvement discuter de son fonctionnement.
+
+Deux réseaux sont entraînés en parallèle. Le premier est un générateur de nouvelles données, chargé de produire des images et des labels. Le deuxième réseau est un discriminateur, dont la mission est de déterminer si une image provient d'un jeu d'entraînement (donc réelle) ou si elle est une image fausse générée par une IA.
+
+À chaque itération, le générateur produit plusieurs images qu'il mélange à un ensemble de données contenant des images réelles. Ensuite, le discriminateur évalue lesquelles sont réelles et lesquelles sont fausses. Une fonction de coût est alors calculée.
+
+Au fil de l'entraînement, les deux réseaux deviennent experts : l'un pour générer de nouvelles images, l'autre pour discerner la subtilité des images générées par rapport aux images réelles. L'entraînement se termine lorsque le discriminateur ne parvient plus à distinguer les images réelles des images produites par l'IA.
+
+Je n'ai pas directement rédigé le programme, mais en utilisant la documentation de TensorFlow sur les réseaux adversariaux, j'ai pu tester ce type d'algorithme qui fonctionne très bien pour le jeu de données MNIST. Cependant, il s'est avéré peu efficace dans notre cas, car il s'agit d'images de bruit ne présentant pas beaucoup de cohérence entre elles.
+
+
 \addcontentsline{toc}{section}{Conclusion}
 \section*{Conclusion}
+
+\todo{chat gpt}
+
+Ce projet a permis d'explorer différentes approches pour comprendre et modéliser le comportement du modèle d'Ising 2D, en mettant en œuvre des méthodes d'intelligence artificielle. L'intérêt principal a été de déterminer la phase du système (paramagnétique ou ferromagnétique) en se basant sur des configurations de spins générées à différentes températures.
+
+\subsection*{Modèle de Magnétisation}
+
+Le modèle basé sur la magnétisation moyenne a montré des performances prometteuses avec une MSE de 0.108, surpassant significativement le modèle naïf. Cependant, il a présenté des difficultés à distinguer les hautes températures, ce qui peut être attribué à la densité de configurations similaires à haute température. Malgré cela, il a réussi à prédire la phase du système avec une précision de 98.8%, dépassant les attentes initiales.
+
+\subsection*{Modèles d'Apprentissage Profond}
+
+L'utilisation de réseaux de neurones convolutifs (CNN) pour classifier les configurations de spins a été une approche plus complexe. L'entraînement du modèle a nécessité une attention particulière pour éviter le sur-apprentissage en raison du bruit dans les données et du nombre limité de températures distinctes. Cependant, avec un ajustement adéquat des hyperparamètres, le CNN a démontré une capacité à apprendre des caractéristiques complexes et a atteint des performances compétitives.
+
+\subsection*{Génération de Données}
+
+La génération de nouvelles configurations de spins à l'aide d'algorithmes d'Ising et de l'algorithme de Metropolis-Hastings a été réussie. Cela a permis d'élargir le jeu de données pour des températures différentes et d'évaluer la capacité des modèles à généraliser.
+
+\subsection*{Perspectives et Améliorations}
+
+Des améliorations potentielles pourraient inclure l'exploration de modèles plus sophistiqués, la prise en compte de la symétrie du modèle d'Ising dans la conception des architectures de réseaux neuronaux, et l'optimisation plus poussée des hyperparamètres. De plus, l'utilisation d'autres techniques de génération de données, telles que les générateurs adversariaux (GAN), pourrait être envisagée pour créer des configurations de spins plus diversifiées.
+
+En conclusion, ce projet a fourni des insights sur la convergence entre l'intelligence artificielle et la physique, en montrant comment les modèles peuvent être utilisés pour comprendre et classer des phénomènes complexes tels que les transitions de phase dans le modèle d'Ising 2D.
+
+\appendix
+\section{Architecture du modèle de CNN} \label{appendix:CNN}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{./figures/model.png}
+	\caption{Architecture du modèle}
+	\label{fig:model}
+\end{figure}
+
+\section{Reconstruction d'image} \label{appendix:reconstruction}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{triple.jpg}
+	\caption{Reconstruction d'image}
+	\label{fig:tiple}
+\end{figure}
 
 \end{document}
