@@ -22,7 +22,7 @@
 \documentclass[11pt, parskip=half]{scrartcl} % Font size
 
 \input{structure.tex} % Include the file specifying the document structure and custom commands
-\geometry{a4paper, margin=0.8in}
+\geometry{a4paper, margin=0.65in, footskip=25pt}
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -186,7 +186,7 @@ On peut alors lancer la simulation. Pour une température fixée, nous réalison
 
 Pour chaque température, le temps de relaxation du système est plus ou moins long et il est également influencé par la composition du système de départ. Dans le cas où l'on aurait une situation initiale avec que des spins alignés, le temps de relaxation vers l'équilibre pour T proche de 0 est très rapidement trouvé car le système est déjà à l'équilibre. Le matériau est bien ferromagnétique : $\frac{|M|}{M_{max}} > 0$.
 
-En revanche, pour T proche de 0 et un système de départ homogène avec autant de 0 que de 1, le temps de relaxation est plus lent et fait apparaître de nouveaux états d'équilibre. Les spins peuvent tous s'aligner dans un sens ou dans un autre. Il existe une autre formation, de moment magnétique total nul où il y a coexistence d'une bande up et d'une bande down. Avec l'analogie du tore, c'est comme si on avait trempé un donut dans du chocolat jusqu'à la moitié. C'est une situation qui se rapproche de la situation dite d'antiferromagnétisme (\href{https://couleur-science.eu/?d=262e6c--ferromagnetisme-diamagnetisme-paramagnetisme}{lien}).
+En revanche, pour T proche de 0 et un système de départ homogène avec autant de 0 que de 1, le temps de relaxation est plus lent et fait apparaître de nouveaux états d'équilibre. Les spins peuvent tous s'aligner dans un sens ou dans un autre. Il existe une autre formation, de moment magnétique total nul où il y a coexistence d'une bande up et d'une bande down. Avec l'analogie du tore, c'est comme si on avait trempé un donut dans du chocolat jusqu'à la moitié. C'est une situation qui se rapproche de la situation dite d'antiferromagnétisme \cite{ferromag}.
 
 \begin{figure}[h]
 	\centering
@@ -264,7 +264,7 @@ Avec une MSE de $0.108$, on obtient un modèle qui est $12$ fois plus performant
 Cela peut s'expliquer par le fait que, à haute température, la densité est quasiment nulle. Ainsi, lorsque le modèle va essayer de prédire une configuration de spin à haute température, il va prédire la température correspondant plus ou moins à la moyenne des températures capable de produire une configuration de spin similaire. Cela apparaît clairement sur la figure \ref{fig:forest}.
 
 Nous pouvons, maintemant, utiliser la prédiction en température de notre modèle pour déterminer la phase du système. Pour cela, nous allons comparer la valeur prédite à la valeur de la température critique. Si la valeur prédite est supérieure à la valeur de la température critique, alors le système est dans la phase paramagnétique. Sinon, il est dans la phase ferromagnétique.
-Théoriquement, la température critique d'un modèle d'Ising 2D est de \todo{cite une source}$2.269$. On retrouve les résultats de cette analyse sur la figure \ref{fig:forest_matrix}.  Notre modèle est capable de prédire la phase du système avec une précision de $98.8\%$. On a donc un modèle performant.
+Théoriquement, la température critique d'un modèle d'Ising 2D est de $2.269$ \cite{aviles_critical_2023}. On retrouve les résultats de cette analyse sur la figure \ref{fig:forest_matrix}.  Notre modèle est capable de prédire la phase du système avec une précision de $98.8\%$. On a donc un modèle performant.
 
 \begin{figure}[h]
 	\begin{subfigure}[c]{0.65\textwidth}
@@ -283,6 +283,7 @@ Théoriquement, la température critique d'un modèle d'Ising 2D est de \todo{ci
 \end{figure}
 
 \subsection{Analyse par l'état individuel des spins}
+\todo{section à compléter}
 
 \section{Réseaux de neurones}
 \subsection{Objectif}
@@ -413,7 +414,7 @@ Ce projet a permis d'explorer différentes approches pour comprendre et modélis
 
 \subsection*{Modèle de Magnétisation}
 
-Le modèle basé sur la magnétisation moyenne a montré des performances prometteuses avec une MSE de 0.108, surpassant significativement le modèle naïf. Cependant, il a présenté des difficultés à distinguer les hautes températures, ce qui peut être attribué à la densité de configurations similaires à haute température. Malgré cela, il a réussi à prédire la phase du système avec une précision de 98.8%, dépassant les attentes initiales.
+Le modèle basé sur la magnétisation moyenne a montré des performances prometteuses avec une MSE de 0.108, surpassant significativement le modèle naïf. Cependant, il a présenté des difficultés à distinguer les hautes températures, ce qui peut être attribué à la densité de configurations similaires à haute température. Malgré cela, il a réussi à prédire la phase du système avec une précision de 98.8\%, dépassant les attentes initiales.
 
 \subsection*{Modèles d'Apprentissage Profond}
 
@@ -428,6 +429,11 @@ La génération de nouvelles configurations de spins à l'aide d'algorithmes d'I
 Des améliorations potentielles pourraient inclure l'exploration de modèles plus sophistiqués, la prise en compte de la symétrie du modèle d'Ising dans la conception des architectures de réseaux neuronaux, et l'optimisation plus poussée des hyperparamètres. De plus, l'utilisation d'autres techniques de génération de données, telles que les générateurs adversariaux (GAN), pourrait être envisagée pour créer des configurations de spins plus diversifiées.
 
 En conclusion, ce projet a fourni des insights sur la convergence entre l'intelligence artificielle et la physique, en montrant comment les modèles peuvent être utilisés pour comprendre et classer des phénomènes complexes tels que les transitions de phase dans le modèle d'Ising 2D.
+
+\addcontentsline{toc}{section}{Références}
+\bibliographystyle{plain}
+\bibliography{bibliographie}
+\nocite{noauthor_ising_2023}
 
 \appendix
 \section{Architecture du modèle de CNN} \label{appendix:CNN}
