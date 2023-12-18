@@ -166,20 +166,21 @@ Dans le cas où $\Delta E \in {0, -4, -8}$, l'énergie est minimisée, et donc l
 
 Nous remarquons que plus $T$ est élevée, plus la probabilité de transition est importante.
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\linewidth]{./figures/proba.jpg}
-	\caption{probabilité de transition en fonction de la température}
-	\label{fig:H}
-\end{figure}
-
 On peut alors lancer la simulation. Pour une température fixée, nous réalisons un certain nombre de tentatives de changement de spin. Le système va se relaxer jusqu'à atteindre un équilibre, où la moyenne des spins composant l'image est stable après chaque tentative successive de changement de l'état d'un spin de l'image.
-
 \begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\linewidth]{./figures/simulation_ising.jpg}
-	\caption{Évolution du ratio spin up/spin down pour $T=2$ et $1,6$ million d'itérations.}
-	\label{fig:H}
+	\begin{subfigure}[c]{0.5\textwidth}
+		\centering
+		\includegraphics[width=0.95\linewidth]{./figures/proba.jpg}
+		\caption{probabilité de transition en fonction de la température}
+		\label{fig:H}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.5\textwidth}		
+		\centering
+		\includegraphics[width=0.95\linewidth]{./figures/simulation_ising.jpg}
+		\caption{Évolution du ratio spin up/spin down pour $T=2$ et $1,6$ million d'itérations.}
+		\label{fig:H}
+	\end{subfigure}
+	\caption{}
 \end{figure}
 
 \subsection{Stabilité, cohérence de la solution et considérations techniques}
@@ -283,16 +284,28 @@ Théoriquement, la température critique d'un modèle d'Ising 2D est de $2.269$ 
 \end{figure}
 
 \subsection{Analyse par l'état individuel des spins}
-\todo{section à compléter}
+Dans cette partie, notre objectif était de développer des modèles naïfs afin d’obtenir des scores de référence, pour ensuite avoir une référence de la performance et évaluer la robustesse de notre modèle performant. Pour cela, nous avons décidé de créer un modèle basé sur le hasard, puisque qu’on a jugé que c’était le modèle moins efficace. Nous allons maintenant analyser ce modèle et évaluer ces performances. 
+
+On part du principe que sans modèle, on aurait une chance de 50\% de prédire la transition de phase. Cela est dû au fait que nous pouvons simplifier cette approche par le concept que la donnée considérée est soit en transition de phase ou elle ne l’est pas. Notre modèle basé sur le hasard suit ce concept. Cependant, ce modèle est toujours un peu bruité, dû au fait que les proportions de données appartenant à la classe positive ne correspondent pas à celles de classe négative.
+
+Analysons maintenant les performances de ce modèle. Pour ce modèle, on trouve une MSE (\textit{Mean Squared Error}) $= 0.49$. Cela indique que les prédictions du modèle sont considérablement éloignées des vraies valeurs. Ce modèle n’est pas capable de capturer efficacement les caractéristiques nécessaires à la transition de phase. Pour la précision, on obtient une valeur de $0.51$, soit presque la moitié correctement classés, proche de la valeur attendue de 50\%. On confirme alors que le modèle n’a pas réussi à surpasser l’approche aléatoire. 
+
+Finalement, nous avons réalisé la matrice de confusion, que nous observons à la figure \ref{fig:random_matrix}. Cette matrice révèle davantage les performances du modèle. Les résultats indiquent que le modèle prédit correctement 51\% des échantillons. Cela nous montre à nouveau l’inefficacité du modèle à distinguer les deux classes. 
+
+Le modèle basé sur le hasard ne réussit pas à faire des prédictions significatives pour cette tâche de classification binaire. Ces évaluations de la performance de ce modèle que nous avons fait montrent bien ces limites et donc il est nécessaire de réaliser un modèle plus complexe.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.44\linewidth]{./figures/random_matrix.png}
+	\caption{Matrice de confusion du modèle basé sur le hasard}
+	\label{fig:random_matrix}
+\end{figure}
 
 \section{Réseaux de neurones}
 \subsection{Objectif}
 Dans le cadre de ce projet, notre objectif final était de développer un modèle performant capable de classer des matrices de taille 40x40 en deux catégories distinctes. Comme dans le modèle d’Ising l’état d’un spin est dépendant de ces plus proches voisins, le plus naturel était de créer un réseau neuronal convolutif car il prend en compte les corrélations locales entre pixels voisins. La performance de notre classification est alors dépendante de l’architecture de notre modèle, de la manière dont il extrait et apprend les caractéristiques pertinentes des matrices en entrée.
 
 Dans cette partie, nous allons analyser l’architecture du modèle qu’on a créé. On va discuter pourquoi on a choisi chaque couche et quel rôle elles jouent dans notre modèle. On analysera ensuite nos étapes d’entraînement puis on discutera les méthodes que nous avons utilisé pour évaluer nos performances.
-
-\subsection{Préparation des données}
-\todo{section à compléter}
 
 \subsection{Architecture du modèle}
 L’ensemble de l’architecture repose sur des principes de convolution, pooling et de couches entièrement connectées. La combinaison de ces différentes couches crée une architecture cohérente et un modèle performant.
@@ -315,7 +328,7 @@ Pendant l’entraînement, l’erreur d’entraînement et l’erreur de validat
 \subsection{Evaluation des performances du modèle}
 L’objectif principal du modèle est de capturer des motifs complexes qui permettront au modèle d’apprendre les complexités de nos matrices données en entrée et puis faire des prédictions sur à quelle classe appartient chaque matrice. Avec l’enregistrement de l’entraînement et la possibilité de faire des essais avec notre jeu de test, on peut évaluer notre modèle.
 
-Tout d’abord, on peut analyser la performance de notre modèle en prenant en compte l’erreur de la fonction coût sur l’ensemble de données de validation, qui est de seulement \todo{comparer aux autres modèles} 0.0084. Cela indique que le modèle est très performant : il a atteint un niveau très bas de perte sur les données de validation et a une très bonne capacité de se généraliser à de nouvelles données. On peut aussi vérifier la précision (accuracy) de notre modèle sur les données de test : 0.99. Notre modèle est capable de classer correctement 99\% des échantillons dans l’ensemble de test. Cela renforce à nouveau l’idée que notre modèle a une très bonne capacité à généraliser et qu’il est très adéquat à la classification binaire. Nous avons aussi calculé une autre métrique intéressante : la sensibilité, mesurant la capacité du modèle à identifier tous les exemples positifs réels dans l'ensemble de données et nous trouvons une valeur de 0.99, indiquant une excellente capacité à mesurer des vrais positifs.
+Tout d’abord, on peut analyser la performance de notre modèle en prenant en compte l’erreur de la fonction coût sur l’ensemble de données de validation, qui est de seulement \todo{comparer aux autres modèles donc faire la MSE} 0.0084. Cela indique que le modèle est très performant : il a atteint un niveau très bas de perte sur les données de validation et a une très bonne capacité de se généraliser à de nouvelles données. On peut aussi vérifier la précision (accuracy) de notre modèle sur les données de test : 0.99. Notre modèle est capable de classer correctement 99\% des échantillons dans l’ensemble de test. Cela renforce à nouveau l’idée que notre modèle a une très bonne capacité à généraliser et qu’il est très adéquat à la classification binaire. Nous avons aussi calculé une autre métrique intéressante : la sensibilité, mesurant la capacité du modèle à identifier tous les exemples positifs réels dans l'ensemble de données et nous trouvons une valeur de 0.99, indiquant une excellente capacité à mesurer des vrais positifs.
 
 Ensuite, nous pouvons étudier l’entraînement de notre modèle. Dans la figure \ref{fig:train}, nous observons l’évolution de l’erreur de la fonction de coût des données d’entraînement et de validation au cours de l’entraînement (graphe en haut). On remarque que les courbes représentant ces données sont très proches dès la première epoch jusqu’à l’epoch 6 et puis commencent à diverger ce qui peut être un signe de sur-apprentissage. Cependant, cela peut être négligeable dû à la simple différence de 0.005 entre les deux courbes. On souligne encore que l’évolution de l’entraînement est très légère, sans grande amélioration de l’erreur sur la fonction de coût. Encore dans la figure \ref{fig:train}, on observe l’évolution de la précision au cours de l’entraînement (graphe en bas). On remarque que dès la première epoch jusqu’à la fin de l’entraînement, ces deux courbes sont toujours très proches autour de 0.998, ce qui confirme à nouveau excellente précision de notre modèle.
 
@@ -378,16 +391,20 @@ Cette reconstruction est souvent sujette à une certaine imprécision, nécessit
 L'entraînement se révèle capricieux lorsque la température (T) est élevée, mais devient plus stable à basse température, ce qui est normal étant donné que tous les filtres convergent vers 0.
 
 \begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\linewidth]{./figures/evol_T_1.jpg}
-	\caption{Convergence des fonction de coûts à $T = 1.00$}
-	\label{fig:T1}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\linewidth]{./figures/evol_T_4.jpg}
-	\caption{Convergence des fonction de coûts à $T = 4.00$}
-	\label{fig:T4}
+	\begin{subfigure}[c]{0.5\textwidth}
+		
+		\centering
+		\includegraphics[width=0.9\linewidth]{./figures/evol_T_1.jpg}
+		\caption{$T = 1.00$}
+		\label{fig:T1}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.5\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{./figures/evol_T_4.jpg}
+		\caption{$T = 4.00$}
+		\label{fig:T4}
+	\end{subfigure}
+	\caption{Convergence des fonction de coûts}
 \end{figure}
 
 Une autre méthode pour évaluer la cohérence de l'image de sortie consiste à utiliser les réseaux adversariaux (Adversarial Neural Networks, en anglais).
@@ -449,7 +466,7 @@ En conclusion, ce projet a fourni des insights sur la convergence entre l'intell
 \section{Reconstruction d'image} \label{appendix:reconstruction}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{triple.jpg}
+	\includegraphics[width=1\linewidth]{./figures/triple.jpg}
 	\caption{Reconstruction d'image}
 	\label{fig:tiple}
 \end{figure}
