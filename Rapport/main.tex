@@ -223,7 +223,7 @@ Les données fournies au départ sont des vecteurs de taille $1600$ contenant de
 Avec ces configurations, un label est associé à chaque configuration. Ce label est une valeur binaire qui nous indique la phase dans laquelle se trouve le système.
 De plus, nous avons généré un second jeu de données avec $16000$ configurations de spins pour $100$ températures comprises entre $0.25$ et $4.00$. Ce second jeu de données nous permettra de tester nos modèles sur des données avec des températures différentes de celles du jeu de données original. On pourra ainsi voir si nos modèles sont capables de se séparer des températures discrètes du jeu de données original.
 Comme on peut le voir sur la figure \ref{fig:rawdata}, nos données forment un ensemble bruité mais il apparaît une symétrie par rapport à l'axe horizontal. En effet, à basse température, les spins sont majoritairement alignés de la même façon mais de manière aléatoire en $+$ ou $-$.
-Cette symétrie de nos données peut poser un problème à nos modèles qui auront dû apprendre à faire la différence entre deux configurations opposées mais équivalentes. Pour éviter ce problème, nous allons symétriser nos données en inversant les spins de toutes les configurations qui ont une moyenne de spin négative.
+Cette symétrie de nos données peut poser un problème à nos modèles qui auront dû mal à apprendre à faire la différence entre deux configurations opposées mais équivalentes. Pour éviter ce problème, nous allons symétriser nos données en inversant les spins de toutes les configurations qui ont une moyenne de spin négative.
 Ainsi, on se retrouve avec des données symétriques par rapport à l'axe horizontal comme on peut le voir sur la figure \ref{fig:symdata}.
 
 \begin{figure}[h]
@@ -248,6 +248,7 @@ Il nous faut maintenant séparer nos données en deux ensembles : un ensemble d'
 Afin d'appliquer exactement la même transformation sur les données de test, nous allons créer un pipeline qui va appliquer la méthode de symétrisation puis la méthode de normalisation. Ainsi, on pourra appliquer le pipeline sur les données de test sans avoir à les modifier.
 Finalement, certains modèles seront plus réceptifs à des données présentées sous forme de vecteur de taille $1600$, d'autre sous forme de matrice de taille $40 \times 40$. Pour éviter de devoir modifier les données à chaque fois, nous allons créer un pipeline qui va transformer les données en matrice si nécessaire et appliquer les autres méthodes de pré-traitement expliquées ci-dessus.
 
+\newpage
 \section{Modèles classiques}
 
 \subsection{Analyse par la magnétisation}
@@ -301,6 +302,7 @@ Le modèle basé sur le hasard ne réussit pas à faire des prédictions signifi
 	\label{fig:random_matrix}
 \end{figure}
 
+\newpage
 \section{Réseaux de neurones}
 \subsection{Objectif}
 Dans le cadre de ce projet, notre objectif final était de développer un modèle performant capable de classer des matrices de taille 40x40 en deux catégories distinctes. Comme dans le modèle d’Ising l’état d’un spin est dépendant de ces plus proches voisins, le plus naturel était de créer un réseau neuronal convolutif car il prend en compte les corrélations locales entre pixels voisins. La performance de notre classification est alors dépendante de l’architecture de notre modèle, de la manière dont il extrait et apprend les caractéristiques pertinentes des matrices en entrée.
@@ -365,6 +367,7 @@ Finalement, nous pouvons tracer la courbe ROC (Receiver Operating Characteristic
 
 Dans cette partie, nous avons construit un réseau neuronal convolutif performant capable de classer efficacement nos données par rapport à l’existence ou pas d’une transition de phase. L’architecture du modèle choisi permet d’extraire les caractéristiques complexes de nos données et l’entraînement a été optimisé pour cette tâche de classification binaire. Les métriques de notre modèle, telles que la précision, la sensibilité, la matrice de confusion et la courbe ROC montrent la robustesse de notre modèle. Nous avons alors créé un modèle à la fois précis et efficace, qui démontre une performance exceptionnelle dans le classement des matrices du modèle Ising.
 
+\newpage
 \section{Génération d'images}
 Dans cette partie, nous allons étudier comment générer de nouvelles images crédibles à partir du jeu de données à l'aide de réseaux convolutionnels.
 
@@ -377,7 +380,7 @@ Nous allons discuter de l'une des méthodes que nous avons choisies pour génér
 
 Le réseau s'entraîne en partant d'une image du jeu de données d'entraînement, puis, cherche à reproduire une image du même ensemble de données. Il peut s'agir de la même image ou d'une autre, l'objectif étant de générer une nouvelle image cohérente.
 
-L'entraînement de l'encodeur et du décodeur se déroule de manière intégrée, les deux réseaux formant ainsi un seul. Une fois que l'autoencodeur est entraîné, il peut être dissocié. On peut alors utiliser l'encodeur pour réduire dans l'espace latent toutes les images du jeu d'entraînement ou du jeu de test associées à une température donnée. Cela permet de générer dans l'espace latent le vecteur caractéristique de la température spécifiée. Ce vecteur caractéristique représente en réalité une direction dans un espace de dimension définie par l'espace latent, associée à une caractéristique dominante du jeu de données d'entraînement. Ainsi, il est possible de créer un nouveau vecteur pointant dans cette direction pour générer, à l'aide du décodeur, de nouvelles images.
+L'entraînement de l'encodeur et du décodeur se déroule de manière intégrée, les deux réseaux formant ainsi un seul réseau. Une fois que l'autoencodeur est entraîné, il peut être dissocié. On peut alors utiliser l'encodeur pour réduire dans l'espace latent toutes les images du jeu d'entraînement ou du jeu de test associées à une température donnée. Cela permet de générer dans l'espace latent le vecteur caractéristique de la température spécifiée. Ce vecteur caractéristique représente en réalité une direction dans un espace de dimension définie par l'espace latent, associée à une caractéristique dominante du jeu de données d'entraînement. Ainsi, il est possible de créer un nouveau vecteur pointant dans cette direction pour générer, à l'aide du décodeur, de nouvelles images.
 
 \begin{figure}[h]
 	\centering
@@ -422,6 +425,7 @@ Au fil de l'entraînement, les deux réseaux deviennent experts : l'un pour gén
 Je n'ai pas directement rédigé le programme, mais en utilisant la documentation de TensorFlow sur les réseaux adversariaux, j'ai pu tester ce type d'algorithme qui fonctionne très bien pour le jeu de données MNIST. Cependant, il s'est avéré peu efficace dans notre cas, car il s'agit d'images de bruit ne présentant pas beaucoup de cohérence entre elles.
 
 
+\newpage
 \addcontentsline{toc}{section}{Conclusion}
 \section*{Conclusion}
 
@@ -445,6 +449,7 @@ Des améliorations potentielles pourraient inclure l'exploration de modèles plu
 
 En conclusion, ce projet a fourni des insights sur la convergence entre l'intelligence artificielle et la physique, en montrant comment les modèles peuvent être utilisés pour comprendre et classer des phénomènes complexes tels que les transitions de phase dans le modèle d'Ising 2D.
 
+\newpage
 \addcontentsline{toc}{section}{Références}
 \bibliographystyle{IEEEtran}
 \bibliography{bibliographie}
