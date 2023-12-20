@@ -11,7 +11,7 @@ Sorbonne Université - Master 1 : Physique Fondamentale et Application - Intelli
 - `./gen_new_method/` : Dossier contenant les codes et données liés à l'autoencoder et Adversary Neural Network
 - `./simulation/` : Dossier contenant les codes et données liés à la simulation de l'Ising
 
-### Fichier Important
+### Fichiers Importants
 - `projet_ising_finale.ipynb` : Notebook contenant tout les codes en liens avec le Rapport (Version Finale)
 - `new_data_accelerated.npy` : Données générés par nos programmes (Version Finale) **Necessaire pour faire fonctionner le Notebook**
 
