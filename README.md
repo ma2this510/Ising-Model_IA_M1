@@ -1,5 +1,6 @@
 # Projet de IA : le Modèle D'ising
 Sorbonne Université - Master 1 : Physique Fondamentale et Application - Intelligence Artificielle
+
 **Auteurs** : G. Carvalho - A. Cremel-Schlemer - M. Panet
 
 ## Explication des fichiers
